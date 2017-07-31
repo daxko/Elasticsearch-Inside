@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Text;
+using Daxko.ElasticsearchInside.Utilities.Archive;
 using NUnit.Framework;
 
 namespace Daxko.ElasticsearchInside.Tests.Utilities.Archive

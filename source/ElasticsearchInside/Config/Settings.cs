@@ -8,10 +8,10 @@ using System.Threading.Tasks;
 
 namespace Daxko.ElasticsearchInside.Config
 {
-    internal class Settings : ISettings
+    public class Settings : ISettings
     {
         private static readonly Random Random = new Random();
-        internal readonly DirectoryInfo RootFolder;
+        public readonly DirectoryInfo RootFolder;
 
         public Settings()
         {
@@ -98,13 +98,13 @@ namespace Daxko.ElasticsearchInside.Config
             return result;
         }
 
-        internal async Task WriteSettings()
+        public async Task WriteSettings()
         {
             await WriteLoggingConfig();
             await WriteYaml();
         }
 
-        internal async Task WriteYaml()
+        public async Task WriteYaml()
         {
             var configDir = new DirectoryInfo(Path.Combine(ElasticsearchHomePath.FullName, "config"));
             if (!configDir.Exists)
@@ -121,7 +121,7 @@ namespace Daxko.ElasticsearchInside.Config
                         elasticsearchParameter.Value));
         }
 
-        internal async Task WriteLoggingConfig()
+        public async Task WriteLoggingConfig()
         {
             var configDir = new DirectoryInfo(Path.Combine(ElasticsearchHomePath.FullName, "config"));
             if (!configDir.Exists)

@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace Daxko.ElasticsearchInside.Utilities.Archive
 {
-    internal class ArchiveReader : BinaryReader
+    public class ArchiveReader : BinaryReader
     {
         public ArchiveReader(Stream input, bool leaveOpen = false) : base(input, Encoding.UTF8, leaveOpen) { }
 
-        internal string ReadFileName()
+        public string ReadFileName()
         {
             var filenameLength = ReadInt32();
             return Encoding.UTF8.GetString(ReadBytes(filenameLength));
@@ -43,7 +43,7 @@ namespace Daxko.ElasticsearchInside.Utilities.Archive
            
         }
 
-        internal async Task ExtractToStream(Stream destination, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task ExtractToStream(Stream destination, CancellationToken cancellationToken = default(CancellationToken))
         {
             var length = ReadInt32();
             var buffer = new byte[81920];
