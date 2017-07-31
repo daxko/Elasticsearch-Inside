@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using ElasticsearchInside.Config;
+using Daxko.ElasticsearchInside.Config;
 using NUnit.Framework;
 
-namespace ElasticsearchInside.Tests.Config
+namespace Daxko.ElasticsearchInside.Tests.Config
 {
     [TestFixture]
     public class SettingsTests

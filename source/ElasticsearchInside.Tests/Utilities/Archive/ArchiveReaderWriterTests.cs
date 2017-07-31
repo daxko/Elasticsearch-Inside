@@ -1,9 +1,8 @@
 ﻿using System.IO;
 using System.Text;
-using ElasticsearchInside.Utilities.Archive;
 using NUnit.Framework;
 
-namespace ElasticsearchInside.Tests.Utilities.Archive
+namespace Daxko.ElasticsearchInside.Tests.Utilities.Archive
 {
     [TestFixture]
     public class ArchiveReaderWriterTests

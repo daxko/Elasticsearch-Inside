@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ElasticsearchInside
+namespace Daxko.ElasticsearchInside
 {
     public class TimeoutWaitingForElasticsearchStatusException : Exception
     {

@@ -6,14 +6,14 @@ using System.Net.Http;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using ElasticsearchInside.Config;
-using ElasticsearchInside.Executables;
-using ElasticsearchInside.Utilities;
-using ElasticsearchInside.Utilities.Archive;
+using Daxko.ElasticsearchInside.Config;
+using Daxko.ElasticsearchInside.Executables;
+using Daxko.ElasticsearchInside.Utilities;
+using Daxko.ElasticsearchInside.Utilities.Archive;
 using LZ4PCL;
 using CompressionMode = LZ4PCL.CompressionMode;
 
-namespace ElasticsearchInside
+namespace Daxko.ElasticsearchInside
 {
     /// <summary>
     /// Starts a elasticsearch instance in the background, use Ready() to wait for start to complete
@@ -43,8 +43,16 @@ namespace ElasticsearchInside
             };
         }
 
-        public Uri Url => _settings.GetUrl();
-        public ISettings Settings => _settings;
+        public Uri Url
+        {
+            get { return _settings.GetUrl(); }
+        }
+
+        public ISettings Settings
+        {
+            get { return _settings; }
+        }
+
         public async Task<Elasticsearch> Ready()
         {
             await _startupTask;
@@ -73,12 +81,12 @@ namespace ElasticsearchInside
         private async Task SetupAndStart(Func<ISettings, ISettings> configurationAction, CancellationToken cancellationToken = default(CancellationToken))
         {
             _settings = await Config.Settings.LoadDefault(cancellationToken).ConfigureAwait(false);
-            configurationAction?.Invoke(_settings);
+            if (configurationAction != null) configurationAction.Invoke(_settings);
 
-            Info($"Starting Elasticsearch {_settings.ElasticsearchVersion}");
+            Info(string.Format("Starting Elasticsearch {0}", _settings.ElasticsearchVersion));
             
             await SetupEnvironment(cancellationToken).ConfigureAwait(false);
-            Info($"Environment ready after {_stopwatch.Elapsed.TotalSeconds} seconds");
+            Info(string.Format("Environment ready after {0} seconds", _stopwatch.Elapsed.TotalSeconds));
             await StartProcess(cancellationToken).ConfigureAwait(false);
             Info("Process started");
             await WaitForOk(cancellationToken).ConfigureAwait(false);
@@ -91,7 +99,7 @@ namespace ElasticsearchInside
         {
             foreach (var plugin in _settings.Plugins)
             {
-                Info($"Installing plugin {plugin.Name}...");
+                Info(string.Format("Installing plugin {0}...", plugin.Name));
                 using (var process = new ProcessWrapper(
                     new DirectoryInfo(Path.Combine(_settings.ElasticsearchHomePath.FullName, "bin")),
                     Path.Combine(_settings.ElasticsearchHomePath.FullName, "bin\\elasticsearch-plugin.bat"),
@@ -109,10 +117,10 @@ namespace ElasticsearchInside
                 ))
                 {
                     await process.Start(cancellationToken).ConfigureAwait(false);
-                    Info($"Waiting for plugin {plugin.Name} install...");
+                    Info(string.Format("Waiting for plugin {0} install...", plugin.Name));
                     process.WaitForExit();
                 }
-                Info($"Plugin {plugin.Name} installed.");
+                Info(string.Format("Plugin {0} installed.", plugin.Name));
                 await Restart().ConfigureAwait(false);
             }
         }
@@ -158,7 +166,7 @@ namespace ElasticsearchInside
             }
             
             _stopwatch.Stop();
-            Info($"Started in {_stopwatch.Elapsed.TotalSeconds} seconds");
+            Info(string.Format("Started in {0} seconds", _stopwatch.Elapsed.TotalSeconds));
         }
 
         private async Task StartProcess(CancellationToken cancellationToken = default(CancellationToken))
@@ -185,7 +193,7 @@ namespace ElasticsearchInside
             using (var archiveReader = new ArchiveReader(decompresStream))
                 await archiveReader.ExtractToDirectory(destination, cancellationToken).ConfigureAwait(false);
            
-            Info($"Extracted {name.Split('.')[0]} in {started.Elapsed.TotalSeconds:#0.##} seconds");
+            Info(string.Format("Extracted {0} in {1:#0.##} seconds", name.Split('.')[0], started.Elapsed.TotalSeconds));
         }
 
 

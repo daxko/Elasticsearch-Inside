@@ -1,4 +1,4 @@
-﻿namespace ElasticsearchInside.Config
+﻿namespace Daxko.ElasticsearchInside.Config
 {
     /// <summary>
     /// Defines properties needed to install a plugin.
@@ -30,9 +30,9 @@
         {
             if (Url != null)
             {
-                return $"install \"{Url}\"";
+                return string.Format("install \"{0}\"", Url);
             }
-            return $"install \"{Name}\"";
+            return string.Format("install \"{0}\"", Name);
         }
     }
 }

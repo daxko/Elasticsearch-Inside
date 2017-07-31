@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Threading.Tasks;
-using ElasticsearchInside.Config;
+using Daxko.ElasticsearchInside.Config;
 using Nest;
 using NUnit.Framework;
 
-namespace ElasticsearchInside.Tests
+namespace Daxko.ElasticsearchInside.Tests
 {
     [TestFixture]
     public class ElasticsearchTests

@@ -1,8 +1,7 @@
-﻿using System.Diagnostics;
-using System.IO;
+﻿using System.IO;
 using System.Text;
 
-namespace ElasticsearchInside.Utilities.Archive
+namespace Daxko.ElasticsearchInside.Utilities.Archive
 {
     internal class ArchiveWriter : BinaryWriter
     {

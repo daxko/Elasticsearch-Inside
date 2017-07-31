@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ElasticsearchInside.Config
+namespace Daxko.ElasticsearchInside.Config
 {
     public interface ISettings : IDisposable
     {

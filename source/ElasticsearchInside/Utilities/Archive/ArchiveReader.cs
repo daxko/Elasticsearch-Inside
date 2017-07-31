@@ -4,7 +4,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ElasticsearchInside.Utilities.Archive
+namespace Daxko.ElasticsearchInside.Utilities.Archive
 {
     internal class ArchiveReader : BinaryReader
     {

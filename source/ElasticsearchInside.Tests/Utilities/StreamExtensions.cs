@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
 
-namespace ElasticsearchInside.Tests.Utilities
+namespace Daxko.ElasticsearchInside.Tests.Utilities
 {
     public static class StreamExtensions
     {

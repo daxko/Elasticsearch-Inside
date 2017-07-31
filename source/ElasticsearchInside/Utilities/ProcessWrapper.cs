@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ElasticsearchInside.Utilities
+namespace Daxko.ElasticsearchInside.Utilities
 {
     public class ProcessWrapper : IDisposable
     {
@@ -26,7 +26,7 @@ namespace ElasticsearchInside.Utilities
                 RedirectStandardOutput = true,
                 StandardOutputEncoding = Encoding.ASCII,
             };
-            modifyProcessStartInfo?.Invoke(_processStartInfo);
+            if (modifyProcessStartInfo != null) modifyProcessStartInfo.Invoke(_processStartInfo);
 
             _logger = logger;
         }

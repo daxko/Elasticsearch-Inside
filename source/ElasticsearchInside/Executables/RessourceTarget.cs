@@ -1,4 +1,4 @@
-﻿namespace ElasticsearchInside.Executables
+﻿namespace Daxko.ElasticsearchInside.Executables
 {
     internal sealed class RessourceTarget
     {

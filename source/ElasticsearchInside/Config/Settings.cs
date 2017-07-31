@@ -2,33 +2,54 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ElasticsearchInside.Config
+namespace Daxko.ElasticsearchInside.Config
 {
     internal class Settings : ISettings
     {
         private static readonly Random Random = new Random();
-        internal readonly DirectoryInfo RootFolder = new DirectoryInfo(Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N")));
-        public DirectoryInfo ElasticsearchHomePath => new DirectoryInfo(Path.Combine(RootFolder.FullName, "es"));
-        public DirectoryInfo JvmPath => new DirectoryInfo(Path.Combine(RootFolder.FullName, "jre"));
-        public IDictionary<string, string> ElasticsearchParameters { get; } = new Dictionary<string, string>();
-        public IList<string> JVMParameters { get; private set; } = new List<string>();
-        public IList<string> LoggingConfig { get; } = new List<string>();
-        public string ElasticsearchVersion { get; } = ReadVersion();
+        internal readonly DirectoryInfo RootFolder;
+
+        public Settings()
+        {
+            Plugins = new List<Plugin>();
+            Logger = message => Trace.WriteLine(message);
+            ElasticsearchVersion = ReadVersion();
+            LoggingConfig = new List<string>();
+            JVMParameters = new List<string>();
+            ElasticsearchParameters = new Dictionary<string, string>();
+            RootFolder = new DirectoryInfo(Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N")));
+        }
+
+        public DirectoryInfo ElasticsearchHomePath
+        {
+            get { return new DirectoryInfo(Path.Combine(RootFolder.FullName, "es")); }
+        }
+
+        public DirectoryInfo JvmPath
+        {
+            get { return new DirectoryInfo(Path.Combine(RootFolder.FullName, "jre")); }
+        }
+
+        public IDictionary<string, string> ElasticsearchParameters { get; set; }
+        public IList<string> JVMParameters { get; set; }
+        public IList<string> LoggingConfig { get; set; }
+        public string ElasticsearchVersion { get; set; }
         
         private static string ReadVersion()
         {
             var parts = Assembly.GetExecutingAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion.Split('.', '-');
-            return $"{parts[0]}.{parts[1]}.{parts[2]}";
+            return string.Format("{0}.{1}.{2}", parts[0], parts[1], parts[2]);
         }
 
         public string BuildCommandline()
         {
-            return $"{string.Join(" ", JVMParameters)} -Des.path.home=\"{ElasticsearchHomePath.FullName}\" -cp \"lib/elasticsearch-{ElasticsearchVersion}.jar;lib/*\" \"org.elasticsearch.bootstrap.Elasticsearch\"";
+            return string.Format(
+                "{0} -Des.path.home=\"{1}\" -cp \"lib/elasticsearch-{2}.jar;lib/*\" \"org.elasticsearch.bootstrap.Elasticsearch\"",
+                string.Join(" ", JVMParameters), ElasticsearchHomePath.FullName, ElasticsearchVersion);
         }
 
         public static async Task<Settings> LoadDefault(CancellationToken cancellationToken = default(CancellationToken))
@@ -41,8 +62,8 @@ namespace ElasticsearchInside.Config
             };
 
             settings.SetPort(port);
-            settings.SetClustername($"cluster-es-{port}");
-            settings.SetNodename($"node-es-{port}");
+            settings.SetClustername(string.Format("cluster-es-{0}", port));
+            settings.SetNodename(string.Format("node-es-{0}", port));
 
             settings.LoggingConfig.Add("logger.zen.name = org.elasticsearch.discovery.zen.UnicastZenPing");
             settings.LoggingConfig.Add("logger.zen.level = error");
@@ -96,7 +117,8 @@ namespace ElasticsearchInside.Config
             using (var fileStream = file.OpenWrite())
             using (var writer = new StreamWriter(fileStream))
                 foreach (var elasticsearchParameter in ElasticsearchParameters)
-                    await writer.WriteLineAsync($"{elasticsearchParameter.Key}: {elasticsearchParameter.Value}");
+                    await writer.WriteLineAsync(string.Format("{0}: {1}", elasticsearchParameter.Key,
+                        elasticsearchParameter.Value));
         }
 
         internal async Task WriteLoggingConfig()
@@ -121,9 +143,9 @@ namespace ElasticsearchInside.Config
 
         public bool LoggingEnabled { get; set; }
 
-        public Action<string> Logger { get; private set; } = message => Trace.WriteLine(message);
+        public Action<string> Logger { get; private set; }
 
-        public IList<Plugin> Plugins { get; set; } = new List<Plugin>();
+        public IList<Plugin> Plugins { get; set; }
 
         public ISettings LogTo(Action<string> logger)
         {

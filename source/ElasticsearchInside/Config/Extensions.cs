@@ -1,7 +1,7 @@
 ﻿using System;
-using ElasticsearchInside.Utilities;
+using Daxko.ElasticsearchInside.Utilities;
 
-namespace ElasticsearchInside.Config
+namespace Daxko.ElasticsearchInside.Config
 {
     /// <summary>
     /// Adds convenince-methods on top of Elasitcsearch configuration dictionaries and lists
